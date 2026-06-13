@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ShoppingCart, User } from "lucide-react";
 import SearchBar from "../common/SearchBar";
 
@@ -9,11 +10,15 @@ export default function Header() {
         <div className="flex-1">
           <SearchBar></SearchBar>
         </div>
-        <ShoppingCart
-          size={24}
-          className="cursor-pointer text-black"
-        ></ShoppingCart>
-        <User size={24} className="cursor-pointer text-black"></User>
+        <Link href="/cart">
+          <ShoppingCart
+            size={24}
+            className="cursor-pointer text-black"
+          ></ShoppingCart>
+        </Link>
+        <Link href="/login">
+          <User size={24} className="cursor-pointer text-black"></User>
+        </Link>
       </div>
     </header>
   );

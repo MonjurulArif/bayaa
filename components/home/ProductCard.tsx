@@ -18,8 +18,23 @@ export default function ProductCard({ product }: Props) {
           className="h-48 w-full object-cover"
         ></Image>
         <div className="p-3">
-          <h3 className="line-clamp-2 text-sm">{product.title}</h3>
-          <p className="mt-2 font-bold text-pink-600">{product.price}</p>
+          <h3 className="line-clamp-2 text-sm text-black">{product.title}</h3>
+
+          <div className="mt-2">
+            <span className="font-bold text-pink-600">৳ {product.price}</span>
+
+            {product.originalPrice && (
+              <span className="ml-2 text-sm text-gray-400 line-through">
+                ৳ {product.originalPrice}
+              </span>
+            )}
+          </div>
+
+          <div className="mt-2 flex justify-between text-xs text-gray-500">
+            <span>⭐ {product.rating}</span>
+
+            <span>{product.sold} sold</span>
+          </div>
         </div>
       </div>
     </Link>

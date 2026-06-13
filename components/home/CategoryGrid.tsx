@@ -1,22 +1,16 @@
-const categories = [
-  "Phones",
-  "Fashion",
-  "Beauty",
-  "Electronics",
-  "Sports",
-  "Books",
-  "Home",
-  "More",
-];
+import Link from "next/link";
+
+const categories = ["electronics", "fashion", "phones", "beauty"];
 
 export default function CategoryGrid() {
   return (
-    <div className="grid grid-cols-4 md:grid-cols-8 gap-4 p-4">
+    <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-4">
       {categories.map((category) => (
-        <div key={category} className="text-center border rounded-lg p-4">
-          <div className="w-12 h-12 mx-auto bg-gray-200 rounded-full" />
-          <p className="mt-2 text-sm">{category}</p>
-        </div>
+        <Link key={category} href={`/category/${category}`}>
+          <div className="rounded-lg border p-6 text-center hover:bg-gray-100">
+            {category}
+          </div>
+        </Link>
       ))}
     </div>
   );
