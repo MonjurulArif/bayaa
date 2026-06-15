@@ -16,8 +16,11 @@ export default function Header() {
             className="cursor-pointer text-black"
           ></ShoppingCart>
         </Link>
-        <Link href="/login">
-          <User size={24} className="cursor-pointer text-black"></User>
+        <Link
+          href="/login"
+          className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white"
+        >
+          Sign In
         </Link>
       </div>
     </header>
