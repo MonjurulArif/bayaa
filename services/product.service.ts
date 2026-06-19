@@ -4,7 +4,7 @@ export async function getProducts(): Promise<Product[]> {
   return [
     {
       id: 1,
-      title: "Wireless Earbuds",
+      name: "Wireless Earbuds",
       price: 1200,
       originalPrice: 1800,
       rating: 4.8,
@@ -14,7 +14,7 @@ export async function getProducts(): Promise<Product[]> {
     },
     {
       id: 2,
-      title: "Power Bank 20000mAh",
+      name: "Power Bank 20000mAh",
       price: 1500,
       originalPrice: 2200,
       rating: 4.6,
@@ -24,7 +24,7 @@ export async function getProducts(): Promise<Product[]> {
     },
     {
       id: 3,
-      title: "Running Shoes",
+      name: "Running Shoes",
       price: 2200,
       originalPrice: 3000,
       rating: 4.7,
@@ -34,7 +34,7 @@ export async function getProducts(): Promise<Product[]> {
     },
     {
       id: 4,
-      title: "Men's T-Shirt",
+      name: "Men's T-Shirt",
       price: 800,
       originalPrice: 1200,
       rating: 4.5,
@@ -44,7 +44,7 @@ export async function getProducts(): Promise<Product[]> {
     },
     {
       id: 5,
-      title: "Smartphone X",
+      name: "Smartphone X",
       price: 25000,
       originalPrice: 29000,
       rating: 4.9,
@@ -54,7 +54,7 @@ export async function getProducts(): Promise<Product[]> {
     },
     {
       id: 6,
-      title: "Phone Case",
+      name: "Phone Case",
       price: 350,
       originalPrice: 500,
       rating: 4.4,
@@ -64,7 +64,7 @@ export async function getProducts(): Promise<Product[]> {
     },
     {
       id: 7,
-      title: "Face Wash",
+      name: "Face Wash",
       price: 450,
       originalPrice: 650,
       rating: 4.3,
@@ -74,7 +74,7 @@ export async function getProducts(): Promise<Product[]> {
     },
     {
       id: 8,
-      title: "Lipstick",
+      name: "Lipstick",
       price: 600,
       originalPrice: 900,
       rating: 4.7,

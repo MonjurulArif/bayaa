@@ -3,15 +3,15 @@ import { Product } from "@/types/product";
 
 type Props = {
   image: string;
-  title: string;
+  name: string;
 };
 
-export default function ProductGallery({ image, title }: Props) {
+export default function ProductGallery({ image, name }: Props) {
   return (
     <div>
       <Image
         src={image}
-        alt={title}
+        alt={name}
         width={500}
         height={500}
         className="rounded-lg"

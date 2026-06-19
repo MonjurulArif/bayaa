@@ -12,13 +12,13 @@ export default function ProductCard({ product }: Props) {
       <div className="overflow-hidden rounded-lg border bg-white hover:shadow-lg transition cursor-pointer">
         <Image
           src={product.thumbnail}
-          alt={product.title}
+          alt={product.name}
           width={300}
           height={300}
           className="h-48 w-full object-cover"
         ></Image>
         <div className="p-3">
-          <h3 className="line-clamp-2 text-sm text-black">{product.title}</h3>
+          <h3 className="line-clamp-2 text-sm text-black">{product.name}</h3>
 
           <div className="mt-2">
             <span className="font-bold text-pink-600">৳ {product.price}</span>

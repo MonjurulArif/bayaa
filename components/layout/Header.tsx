@@ -1,8 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import { ShoppingCart, User } from "lucide-react";
 import SearchBar from "../common/SearchBar";
 
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+
 export default function Header() {
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+
   return (
     <header className="sticky top-0 bg-white border-b z-50">
       <div className="max-w-7xl mx-auto p-4 flex items-center gap-4">
@@ -10,11 +17,16 @@ export default function Header() {
         <div className="flex-1">
           <SearchBar></SearchBar>
         </div>
-        <Link href="/cart">
+        <Link href="/cart" className="relative">
           <ShoppingCart
             size={24}
             className="cursor-pointer text-black"
           ></ShoppingCart>
+          {cartItems.length > 0 && (
+            <span className="absolute -right-2 -top-2 rounded-full bg-red-500 px-2 text-xs text-white">
+              {cartItems.length}
+            </span>
+          )}
         </Link>
         <Link
           href="/login"
