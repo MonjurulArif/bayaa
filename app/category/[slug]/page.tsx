@@ -1,23 +1,22 @@
-import ProductGrid from "@/components/home/ProductGrid";
+import ProductCard from "@/components/home/ProductCard";
 import { getProductsByCategory } from "@/services/product.service";
 
-type Props = {
-  params: Promise<{
-    slug: string;
-  }>;
-};
-
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
 
-  const products = await getProductsByCategory(slug);
+  const products = getProductsByCategory(slug);
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold capitalize">{slug}</h1>
+    <div className="mx-auto max-w-7xl p-6">
+      <h1 className="mb-6 text-3xl font-bold">{slug}</h1>
+
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {products.map((product) => (
-          <div key={product.id}>{product.title}</div>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>

@@ -1,17 +1,24 @@
-type Props = {
-  searchParams: Promise<{
-    q?: string;
-  }>;
-};
+import ProductCard from "@/components/home/ProductCard";
+import { searchProducts } from "@/services/product.service";
 
-export default async function SearchPage({ searchParams }: Props) {
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   const { q } = await searchParams;
 
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold">Search Results</h1>
+  const products = q ? searchProducts(q) : [];
 
-      <p className="mt-4">Keyword: {q}</p>
+  return (
+    <div className="mx-auto max-w-7xl p-6">
+      <h1 className="mb-6 text-3xl font-bold">Search Results</h1>
+
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
     </div>
   );
 }

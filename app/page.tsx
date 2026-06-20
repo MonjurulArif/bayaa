@@ -10,17 +10,17 @@ export default function Home() {
   return (
     <>
       <Header />
+      <main>
+        <HeroBanner />
 
-      <HeroBanner />
+        <CategoryGrid />
 
-      <CategoryGrid />
+        <section className="p-4">
+          <h2 className="text-2xl font-bold ">Just for You</h2>
+        </section>
 
-      <section className="p-4">
-        <h2 className="text-2xl font-bold ">Just for You</h2>
-      </section>
-
-      <ProductGrid />
-
+        <ProductGrid />
+      </main>
       <Footer />
     </>
   );

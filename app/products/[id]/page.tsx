@@ -2,21 +2,25 @@ import ProductGallery from "@/components/product/ProductGallery";
 import ProductInfo from "@/components/product/ProductInfo";
 import AddToCartButton from "@/components/product/AddToCartButton";
 
-const product = {
-  id: 1,
-  name: "Airbuds Pro Gen 3",
-  price: 1999,
-  category: "Electronics",
-  description:
-    "Premium wireless earbuds with noise cancellation and long battery life.",
-  thumbnail: "https://picsum.photos/500",
-};
+import { getProductById } from "@/services/product.service";
 
-export default async function ProductDetails() {
+export default async function ProductDetails({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  const product = getProductById(Number(id));
+
+  if (!product) {
+    return <div className="p-6">Product Not Found</div>;
+  }
+
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="grid gap-8 md:grid-cols-2">
-        <ProductGallery image={product.thumbnail} title={product.name} />
+        <ProductGallery image={product.thumbnail} name={product.name} />
 
         <div>
           <ProductInfo product={product} />

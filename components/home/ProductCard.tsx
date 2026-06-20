@@ -23,17 +23,17 @@ export default function ProductCard({ product }: Props) {
           <div className="mt-2">
             <span className="font-bold text-pink-600">৳ {product.price}</span>
 
-            {product.originalPrice && (
+            {/* {product.originalPrice && (
               <span className="ml-2 text-sm text-gray-400 line-through">
                 ৳ {product.originalPrice}
               </span>
-            )}
+            )} */}
           </div>
 
           <div className="mt-2 flex justify-between text-xs text-gray-500">
-            <span>⭐ {product.rating}</span>
+            {/* <span>⭐ {product.rating}</span>
 
-            <span>{product.sold} sold</span>
+            <span>{product.sold} sold</span> */}
           </div>
         </div>
       </div>
