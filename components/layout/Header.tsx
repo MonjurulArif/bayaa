@@ -10,6 +10,8 @@ import { RootState } from "@/store/store";
 export default function Header() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
+  const auth = useSelector((state: RootState) => state.auth);
+
   return (
     <header className="sticky top-0 bg-white border-b z-50">
       <div className="max-w-7xl mx-auto p-4 flex items-center gap-4">
@@ -28,12 +30,19 @@ export default function Header() {
             </span>
           )}
         </Link>
-        <Link
-          href="/login"
-          className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white"
-        >
-          Sign In
-        </Link>
+
+        {auth.isAuthenticated ? (
+          <Link href="/profile" className="font-medium text-black">
+            Account
+          </Link>
+        ) : (
+          <Link
+            href="/login"
+            className="rounded-md bg-black px-4 py-2 text-white"
+          >
+            Login
+          </Link>
+        )}
       </div>
     </header>
   );

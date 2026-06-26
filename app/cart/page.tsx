@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
@@ -73,6 +74,13 @@ export default function CartPage() {
 
           <div className="mt-8 border-t pt-4">
             <h2 className="text-xl font-bold">Total: ৳{total}</h2>
+
+            <Link
+              href={"/checkout"}
+              className="mt-4 inline-block rounded bg-black px-6 py-3 text-white"
+            >
+              Proceed to Checkout
+            </Link>
           </div>
         </>
       )}
