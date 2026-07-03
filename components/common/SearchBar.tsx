@@ -11,7 +11,7 @@ export default function SearchBar() {
   const handleSearch = () => {
     if (!query.trim()) return;
 
-    router.push(`/search?q=${query}`);
+    router.push(`/search?q=${encodeURIComponent(query)}`);
   };
 
   return (
@@ -21,9 +21,15 @@ export default function SearchBar() {
         className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
       ></Search>
       <input
+        type="text"
+        placeholder="Search products..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search products..."
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSearch();
+          }
+        }}
         className="w-full pl-11 pr-4 py-3 text-black rounded-full border "
       />
       <button

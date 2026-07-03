@@ -1,6 +1,7 @@
 import ProductGallery from "@/components/product/ProductGallery";
 import ProductInfo from "@/components/product/ProductInfo";
 import AddToCartButton from "@/components/product/AddToCartButton";
+import WishlistButton from "@/components/product/WishlistButton";
 
 import { getProductById } from "@/services/product.service";
 
@@ -27,6 +28,9 @@ export default async function ProductDetails({
 
           <div className="mt-6">
             <AddToCartButton product={product} />
+          </div>
+          <div className="mt-4">
+            <WishlistButton product={product} />
           </div>
         </div>
       </div>
