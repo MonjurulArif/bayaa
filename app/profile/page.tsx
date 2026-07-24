@@ -1,19 +1,40 @@
 "use client";
 
-import { useDispatch, UseDispatch } from "react-redux";
+import { useDispatch, UseDispatch, useSelector } from "react-redux";
 import { logout } from "@/store/slices/authSlice";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { updateProfile } from "@/store/slices/profileSlice";
 
 import AuthGuard from "@/components/auth/AuthGuard";
 import Link from "next/link";
+import { RootState } from "@/store/store";
 
 export default function ProfilePage() {
-  const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    router.push("/login");
+  const profile = useSelector((state: RootState) => state.profile);
+
+  const [firstName, setFirstName] = useState(profile.firstName);
+  const [lastName, setLastName] = useState(profile.lastName);
+  const [email, setEmail] = useState(profile.email);
+  const [phone, setPhone] = useState(profile.phone);
+  const [gender, setGender] = useState(profile.gender);
+  const [birthDate, setBirthDate] = useState(profile.birthDate);
+
+  const handleSave = () => {
+    dispatch(
+      updateProfile({
+        firstName,
+        lastName,
+        email,
+        phone,
+        gender,
+        birthDate,
+      }),
+    );
+
+    alert("Profile updated successfully!");
   };
 
   return (
@@ -25,56 +46,56 @@ export default function ProfilePage() {
           <input
             type="text"
             placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             className="w-full rounded border p-3"
           />
 
           <input
             type="text"
             placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             className="w-full rounded border p-3"
           />
 
           <input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded border p-3"
           />
 
           <input
             type="text"
             placeholder="Phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             className="w-full rounded border p-3"
           />
-          <select className="w-full rounded border p-3">
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
+          <select
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            className="w-full rounded border p-3"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
           </select>
 
-          <input type="date" className="w-full rounded border p-3" />
+          <input
+            value={birthDate}
+            onChange={(e) => setBirthDate(e.target.value)}
+            type="date"
+            className="w-full rounded border p-3"
+          />
           <button
-            className="
-            rounded
-            bg-black
-            px-6
-            py-3
-            text-white cursor-pointer
-          "
+            onClick={handleSave}
+            className="rounded bg-black px-6 py-3 text-white cursor-pointer"
           >
-            Save Profile
+            Save Changes
           </button>
-          <button
-            onClick={handleLogout}
-            className="mt-4 rounded bg-red-500 px-6 py-3 text-white cursor-pointer"
-          >
-            Logout
-          </button>
-          <Link
-            href="/orders"
-            className="inline-block text-blue-600 cursor-pointer"
-          >
-            My Orders
-          </Link>
         </div>
       </div>
     </AuthGuard>

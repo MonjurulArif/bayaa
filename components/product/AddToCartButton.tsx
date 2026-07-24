@@ -2,7 +2,7 @@
 
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/slices/cartSlice";
-import { Product } from "@/types/product";
+import { Product } from "@/types/products";
 
 interface Props {
   product: Product;

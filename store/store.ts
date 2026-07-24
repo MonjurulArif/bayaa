@@ -4,6 +4,7 @@ import cartReducer from "@/store/slices/cartSlice";
 import authReducer from "@/store/slices/authSlice";
 import wishlistReducer from "@/store/slices/wishlistSlice";
 import orderReducer from "@/store/slices/ordersSlice";
+import profileReducer from "@/store/slices/profileSlice";
 
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   wishlist: wishlistReducer,
   order: orderReducer,
+  profile: profileReducer,
 });
 
 const persistConfig = {

@@ -4,11 +4,22 @@ import { searchProducts } from "@/services/product.service";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ query?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { query } = await searchParams;
 
-  const products = q ? searchProducts(q) : [];
+  const products = query ? await searchProducts(query) : [];
+
+  console.log("Products: ", products);
+
+  if (!query) {
+    return (
+      <div>
+        <h1 className="mb-6 text-3xl font-bold mx-auto">Search Results</h1>
+        <p className="text-center">Please enter a search term</p>
+      </div>
+    );
+  }
 
   if (products.length === 0) {
     return (
@@ -18,7 +29,6 @@ export default async function SearchPage({
       </div>
     );
   }
-
   return (
     <div className="mx-auto max-w-7xl p-6">
       <h1 className="mb-6 text-3xl font-bold">Search Results</h1>

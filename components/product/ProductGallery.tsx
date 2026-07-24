@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Product } from "@/types/product";
+import { Product } from "@/types/products";
 
 type Props = {
   image: string;

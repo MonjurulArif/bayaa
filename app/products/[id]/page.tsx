@@ -12,7 +12,7 @@ export default async function ProductDetails({
 }) {
   const { id } = await params;
 
-  const product = getProductById(Number(id));
+  const product = await getProductById(Number(id));
 
   if (!product) {
     return <div className="p-6">Product Not Found</div>;

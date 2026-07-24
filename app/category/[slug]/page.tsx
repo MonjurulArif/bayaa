@@ -8,7 +8,7 @@ export default async function CategoryPage({
 }) {
   const { slug } = await params;
 
-  const products = getProductsByCategory(slug);
+  const products = await getProductsByCategory(slug);
 
   return (
     <div className="mx-auto max-w-7xl p-6">

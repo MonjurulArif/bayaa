@@ -1,8 +1,8 @@
 import ProductCard from "./ProductCard";
 import { getProducts } from "@/services/product.service";
 
-export default function ProductGrid() {
-  const products = getProducts();
+export default async function ProductGrid() {
+  const products = await getProducts();
 
   return (
     <section className="mx-auto max-w-7xl p-4">

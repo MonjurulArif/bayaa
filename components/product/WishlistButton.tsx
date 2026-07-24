@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { Product } from "@/types/product";
+import { Product } from "@/types/products";
 import { RootState } from "@/store/store";
 
 import {

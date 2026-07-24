@@ -3,16 +3,21 @@
 import Link from "next/link";
 import { ShoppingCart, User, Heart } from "lucide-react";
 import SearchBar from "../common/SearchBar";
+import AccountMenu from "./AccountMenu";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 export default function Header() {
+  const auth = useSelector((state: RootState) => state.auth);
+
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
   const wishListItems = useSelector((state: RootState) => state.wishlist.items);
 
-  const auth = useSelector((state: RootState) => state.auth);
+  const cartCount = useSelector((state: RootState) =>
+    state.cart.items.reduce((total, item) => total + item.quantity, 0),
+  );
 
   return (
     <header className="sticky top-0 bg-white border-b z-50">
@@ -29,22 +34,21 @@ export default function Header() {
             </span>
           )}
         </Link>
-        <Link href="/cart" className="relative">
-          <ShoppingCart
-            size={24}
-            className="cursor-pointer text-black"
-          ></ShoppingCart>
-          {cartItems.length > 0 && (
-            <span className="absolute -right-2 -top-2 rounded-full bg-red-500 px-2 text-xs text-white">
-              {cartItems.length}
-            </span>
-          )}
-        </Link>
-
-        {auth.isAuthenticated ? (
-          <Link href="/profile" className="font-medium text-black">
-            Account
+        <div>
+          <Link href="/cart" className="relative">
+            <ShoppingCart
+              size={24}
+              className="cursor-pointer text-black"
+            ></ShoppingCart>
+            {cartCount > 0 && (
+              <span className=" absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                {cartCount}
+              </span>
+            )}
           </Link>
+        </div>
+        {auth.isAuthenticated ? (
+          <AccountMenu />
         ) : (
           <Link
             href="/login"
