@@ -1,17 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
-
-import { RootState } from "@/store/store";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated,
-  );
+  const isAuthenticated = useAuthStore((state) => state.isLoggedIn);
 
   useEffect(() => {
     if (!isAuthenticated) {

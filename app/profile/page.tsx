@@ -1,38 +1,33 @@
 "use client";
 
-import { useDispatch, UseDispatch, useSelector } from "react-redux";
-import { logout } from "@/store/slices/authSlice";
+import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { updateProfile } from "@/store/slices/profileSlice";
 
 import AuthGuard from "@/components/auth/AuthGuard";
 import Link from "next/link";
-import { RootState } from "@/store/store";
 
 export default function ProfilePage() {
-  const dispatch = useDispatch();
+  const user = useAuthStore((state) => state.user);
 
-  const profile = useSelector((state: RootState) => state.profile);
+  const updateProfile = useAuthStore((state) => state.updateProfile);
 
-  const [firstName, setFirstName] = useState(profile.firstName);
-  const [lastName, setLastName] = useState(profile.lastName);
-  const [email, setEmail] = useState(profile.email);
-  const [phone, setPhone] = useState(profile.phone);
-  const [gender, setGender] = useState(profile.gender);
-  const [birthDate, setBirthDate] = useState(profile.birthDate);
+  const [firstName, setFirstName] = useState(user?.firstName);
+  const [lastName, setLastName] = useState(user?.lastName);
+  const [email, setEmail] = useState(user?.email);
+  const [phone, setPhone] = useState(user?.phone);
+  const [gender, setGender] = useState(user?.gender);
+  const [birthDate, setBirthDate] = useState(user?.birthDate);
 
   const handleSave = () => {
-    dispatch(
-      updateProfile({
-        firstName,
-        lastName,
-        email,
-        phone,
-        gender,
-        birthDate,
-      }),
-    );
+    updateProfile({
+      firstName,
+      lastName,
+      email,
+      phone,
+      gender,
+      birthDate,
+    });
 
     alert("Profile updated successfully!");
   };

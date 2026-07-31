@@ -2,35 +2,33 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 import { Heart } from "lucide-react";
 
 import { Product } from "@/types/products";
-
-import {
-  addToWishlist,
-  removeFromWishlist,
-} from "@/store/slices/wishlistSlice";
-
-import { addToCart } from "@/store/slices/cartSlice";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
 
 interface Props {
   product: Product;
 }
 
 export default function ProductCard({ product }: Props) {
-  const dispatch = useDispatch();
-
-  const wishlishItems = useSelector((state: RootState) => state.wishlist.items);
+  const wishlishItems = useWishlistStore((state) => state.items);
+  const cartItems = useCartStore((state) => state.items);
 
   const isWishlisted = wishlishItems.some((item) => item.id === product.id);
 
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeFromWishlist,
+  );
+  const addToWishlist = useWishlistStore((state) => state.addToWishlist);
+  const addToCart = useCartStore((state) => state.addToCart);
+
   const toggleWishlist = () => {
     if (isWishlisted) {
-      dispatch(removeFromWishlist(product.id));
+      removeFromWishlist(product.id);
     } else {
-      dispatch(addToWishlist(product));
+      addToWishlist(product);
     }
   };
 
@@ -73,7 +71,7 @@ export default function ProductCard({ product }: Props) {
         </div>
       </Link>
       <button
-        onClick={() => dispatch(addToCart(product))}
+        onClick={() => addToCart(product)}
         className="mt-2 w-full rounded bg-black text-white cursor-pointer"
       >
         Add To Cart

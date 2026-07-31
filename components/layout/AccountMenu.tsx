@@ -1,20 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 
-import { logout } from "@/store/slices/authSlice";
 import Link from "next/link";
 
 export default function AccountMenu() {
   const [open, setOpen] = useState(false);
 
-  const dispatch = useDispatch();
+  const logout = useAuthStore((state) => state.logout);
   const router = useRouter();
 
   const handleLogout = () => {
-    dispatch(logout());
+    logout();
     router.push("/login");
   };
 

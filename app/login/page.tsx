@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { login } from "@/store/slices/authSlice";
+import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const dispatch = useDispatch();
+  const login = useAuthStore((state) => state.login);
   const router = useRouter();
 
   const [emailOrMobile, setEmailOrMobile] = useState("");
@@ -19,7 +18,16 @@ export default function LoginPage() {
       return;
     }
 
-    dispatch(login({ emailOrMobile }));
+    login({
+      emailOrMobile,
+
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      gender: "",
+      birthDate: "",
+    });
 
     router.push("/");
   };

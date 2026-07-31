@@ -1,20 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-
-import {
-  increaseQuantity,
-  decreaseQuantity,
-  removeFromCart,
-  clearCart,
-} from "@/store/slices/cartSlice";
+import { useCartStore } from "@/store/cartStore";
 
 export default function CartPage() {
-  const dispatch = useDispatch();
+  const items = useCartStore((state) => state.items);
 
-  const items = useSelector((state: RootState) => state.cart.items);
+  const increaseQuantity = useCartStore((state) => state.increaseQuantity);
+  const decreaseQuantity = useCartStore((state) => state.decreaseQuantity);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
 
   const total = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -45,7 +39,7 @@ export default function CartPage() {
 
                   <div className="mt-3 flex gap-2 items-center">
                     <button
-                      onClick={() => dispatch(decreaseQuantity(item.id))}
+                      onClick={() => decreaseQuantity(item.id)}
                       className="px-3 py-1 border rounded cursor-pointer"
                     >
                       -
@@ -54,14 +48,14 @@ export default function CartPage() {
                     <span>{item.quantity}</span>
 
                     <button
-                      onClick={() => dispatch(increaseQuantity(item.id))}
+                      onClick={() => increaseQuantity(item.id)}
                       className="px-3 py-1 border rounded cursor-pointer"
                     >
                       +
                     </button>
 
                     <button
-                      onClick={() => dispatch(removeFromCart(item.id))}
+                      onClick={() => removeFromCart(item.id)}
                       className="ml-4 text-red-500 cursor-pointer"
                     >
                       Remove

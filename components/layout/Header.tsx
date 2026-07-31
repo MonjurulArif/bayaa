@@ -5,19 +5,17 @@ import { ShoppingCart, User, Heart } from "lucide-react";
 import SearchBar from "../common/SearchBar";
 import AccountMenu from "./AccountMenu";
 import CategoriesMenu from "./CategoriesMenu";
-
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+import { useAuthStore } from "@/store/authStore";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
 
 export default function Header() {
-  const auth = useSelector((state: RootState) => state.auth);
+  const auth = useAuthStore((state) => state.isLoggedIn);
 
-  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const wishListItems = useWishlistStore((state) => state.items);
 
-  const wishListItems = useSelector((state: RootState) => state.wishlist.items);
-
-  const cartCount = useSelector((state: RootState) =>
-    state.cart.items.reduce((total, item) => total + item.quantity, 0),
+  const cartCount = useCartStore((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0),
   );
 
   return (
@@ -49,7 +47,7 @@ export default function Header() {
             )}
           </Link>
         </div>
-        {auth.isAuthenticated ? (
+        {auth ? (
           <AccountMenu />
         ) : (
           <Link

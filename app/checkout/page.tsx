@@ -1,20 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
-
 import AuthGuard from "@/components/auth/AuthGuard";
-
-import { addOrder } from "@/store/slices/ordersSlice";
-import { clearCart } from "@/store/slices/cartSlice";
+import { useCartStore } from "@/store/cartStore";
+import { useOrderStore } from "@/store/ordersStore";
+import { useAuthStore } from "@/store/authStore";
 
 export default function CheckoutPage() {
-  const dispatch = useDispatch();
   const router = useRouter();
 
-  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItems = useCartStore((state) => state.items);
 
   const subTotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -25,18 +21,30 @@ export default function CheckoutPage() {
 
   const grandTotal = subTotal + deliveryCharge;
 
-  const profile = useSelector((state: RootState) => state.profile);
+  const user = useAuthStore((state) => state.user);
+
+  const loginValue = user?.emailOrMobile || "";
+
+  const isEmail = loginValue.includes("@");
 
   const [name, setName] = useState(
-    `${profile.firstName} ${profile.lastName}`.trim(),
+    `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(),
   );
-  const [phone, setPhone] = useState(profile.phone || "");
-  const [email, setEmail] = useState(profile.email || "");
+  const [phone, setPhone] = useState(
+    user?.phone || (!isEmail ? loginValue : ""),
+  );
+  const [email, setEmail] = useState(
+    user?.email || (isEmail ? loginValue : ""),
+  );
   const [division, setDivision] = useState("");
   const [district, setDistrict] = useState("");
   const [area, setArea] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("COD");
+
+  const addOrder = useOrderStore((state) => state.addOrder);
+
+  const clearCart = useCartStore((state) => state.clearCart);
 
   const handlePlaceOrder = () => {
     if (!name || !phone || !division || !district || !area || !address) {
@@ -44,17 +52,15 @@ export default function CheckoutPage() {
       return;
     }
 
-    dispatch(
-      addOrder({
-        id: `ORD-${Date.now().toString()}`,
-        date: new Date().toLocaleDateString(),
-        items: cartItems,
-        total: grandTotal,
-        status: "pending",
-      }),
-    );
+    addOrder({
+      id: `ORD-${Date.now()}`,
+      date: new Date().toLocaleDateString(),
+      items: cartItems,
+      total: grandTotal,
+      status: "pending",
+    });
 
-    dispatch(clearCart());
+    clearCart();
 
     router.push("/orders");
   };

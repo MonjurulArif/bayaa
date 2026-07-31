@@ -1,17 +1,14 @@
 "use client";
 
 import Link from "next/link";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import { RootState } from "@/store/store";
-
-import { removeFromWishlist } from "@/store/slices/wishlistSlice";
+import { useWishlistStore } from "@/store/wishlistStore";
 
 export default function WishlistPage() {
-  const dispatch = useDispatch();
+  const items = useWishlistStore((state) => state.items);
 
-  const items = useSelector((state: RootState) => state.wishlist.items);
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeFromWishlist,
+  );
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -42,7 +39,7 @@ export default function WishlistPage() {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  dispatch(removeFromWishlist(product.id));
+                  removeFromWishlist(product.id);
                 }}
                 className="mt-3
                     w-full

@@ -1,12 +1,10 @@
 "use client";
 
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-
+import { useOrderStore } from "@/store/ordersStore";
 import AuthGuard from "@/components/auth/AuthGuard";
 
 export default function OrdersPage() {
-  const orders = useSelector((state: RootState) => state.order.orders);
+  const { orders } = useOrderStore();
 
   return (
     <AuthGuard>

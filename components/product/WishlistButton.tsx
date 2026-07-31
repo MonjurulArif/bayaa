@@ -1,33 +1,27 @@
 "use client";
 
 import { Heart } from "lucide-react";
-
-import { useDispatch, useSelector } from "react-redux";
-
+import { useWishlistStore } from "@/store/wishlistStore";
 import { Product } from "@/types/products";
-import { RootState } from "@/store/store";
-
-import {
-  addToWishlist,
-  removeFromWishlist,
-} from "@/store/slices/wishlistSlice";
 
 interface Props {
   product: Product;
 }
 
 export default function WishlistButton({ product }: Props) {
-  const dispatch = useDispatch();
-
-  const wishListItems = useSelector((state: RootState) => state.wishlist.items);
+  const wishListItems = useWishlistStore((state) => state.items);
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeFromWishlist,
+  );
+  const addToWishlist = useWishlistStore((state) => state.addToWishlist);
 
   const isWishlisted = wishListItems.some((items) => items.id === product.id);
 
   const handleWishList = () => {
     if (isWishlisted) {
-      dispatch(removeFromWishlist(product.id));
+      removeFromWishlist(product.id);
     } else {
-      dispatch(addToWishlist(product));
+      addToWishlist(product);
     }
   };
 
