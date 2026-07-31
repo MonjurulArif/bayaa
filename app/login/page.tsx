@@ -27,6 +27,11 @@ export default function LoginPage() {
       phone: "",
       gender: "",
       birthDate: "",
+
+      division: "",
+      district: "",
+      area: "",
+      address: "",
     });
 
     router.push("/");

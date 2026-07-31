@@ -29,6 +29,33 @@ export default function OrdersPage() {
                   <p>
                     <strong>Status:</strong> {order.status}
                   </p>
+
+                  <p>
+                    <strong>Customer:</strong> {order.customerName}
+                  </p>
+
+                  <p>
+                    <strong>Phone:</strong> {order.phone}
+                  </p>
+
+                  {order.email && (
+                    <p>
+                      <strong>Email:</strong> {order.email}
+                    </p>
+                  )}
+
+                  <p>
+                    <strong>Address:</strong> {order.area}, {order.district},{" "}
+                    {order.division}
+                  </p>
+
+                  <p>
+                    <strong>Details:</strong> {order.address}
+                  </p>
+
+                  <p>
+                    <strong>Payment:</strong> {order.paymentMethod}
+                  </p>
                 </div>
 
                 <div className="space-y-2">

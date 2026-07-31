@@ -9,9 +9,21 @@ interface OrderItem extends Product {
 export interface Order {
   id: string;
   date: string;
+
   items: OrderItem[];
   total: number;
   status: string;
+
+  customerName: string;
+  phone: string;
+  email: string;
+
+  division: string;
+  district: string;
+  area: string;
+  address: string;
+
+  paymentMethod: string;
 }
 
 interface OrderStore {

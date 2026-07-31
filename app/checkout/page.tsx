@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthGuard from "@/components/auth/AuthGuard";
 import { useCartStore } from "@/store/cartStore";
@@ -27,19 +27,28 @@ export default function CheckoutPage() {
 
   const isEmail = loginValue.includes("@");
 
-  const [name, setName] = useState(
-    `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(),
-  );
-  const [phone, setPhone] = useState(
-    user?.phone || (!isEmail ? loginValue : ""),
-  );
-  const [email, setEmail] = useState(
-    user?.email || (isEmail ? loginValue : ""),
-  );
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+
   const [division, setDivision] = useState("");
   const [district, setDistrict] = useState("");
   const [area, setArea] = useState("");
   const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    if (!user) return;
+
+    setName(`${user.firstName ?? ""} ${user.lastName ?? ""}`.trim());
+    setPhone(user.phone || (!isEmail ? loginValue : ""));
+    setEmail(user.email || (isEmail ? loginValue : ""));
+
+    setDivision(user.division || "");
+    setDistrict(user.district || "");
+    setArea(user.area || "");
+    setAddress(user.address || "");
+  }, [user, email, loginValue]);
+
   const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const addOrder = useOrderStore((state) => state.addOrder);
@@ -55,9 +64,21 @@ export default function CheckoutPage() {
     addOrder({
       id: `ORD-${Date.now()}`,
       date: new Date().toLocaleDateString(),
+
       items: cartItems,
       total: grandTotal,
       status: "pending",
+
+      customerName: name,
+      phone,
+      email,
+
+      division,
+      district,
+      area,
+      address,
+
+      paymentMethod,
     });
 
     clearCart();

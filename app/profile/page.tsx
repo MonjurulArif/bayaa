@@ -12,12 +12,16 @@ export default function ProfilePage() {
 
   const updateProfile = useAuthStore((state) => state.updateProfile);
 
-  const [firstName, setFirstName] = useState(user?.firstName);
-  const [lastName, setLastName] = useState(user?.lastName);
-  const [email, setEmail] = useState(user?.email);
-  const [phone, setPhone] = useState(user?.phone);
-  const [gender, setGender] = useState(user?.gender);
-  const [birthDate, setBirthDate] = useState(user?.birthDate);
+  const [firstName, setFirstName] = useState(user?.firstName || "");
+  const [lastName, setLastName] = useState(user?.lastName || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [gender, setGender] = useState(user?.gender || "");
+  const [birthDate, setBirthDate] = useState(user?.birthDate || "");
+  const [division, setDivision] = useState(user?.division || "");
+  const [district, setDistrict] = useState(user?.district || "");
+  const [area, setArea] = useState(user?.area || "");
+  const [address, setAddress] = useState(user?.address || "");
 
   const handleSave = () => {
     updateProfile({
@@ -27,6 +31,11 @@ export default function ProfilePage() {
       phone,
       gender,
       birthDate,
+
+      division,
+      district,
+      area,
+      address,
     });
 
     alert("Profile updated successfully!");
@@ -83,6 +92,45 @@ export default function ProfilePage() {
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
             type="date"
+            className="w-full rounded border p-3"
+          />
+          <select
+            value={division}
+            onChange={(e) => setDivision(e.target.value)}
+            className="w-full rounded border p-3"
+          >
+            <option value="">Select Division</option>
+            <option>Dhaka</option>
+            <option>Chittagong</option>
+            <option>Sylhet</option>
+            <option>Rajshahi</option>
+            <option>Khulna</option>
+            <option>Barisal</option>
+            <option>Rangpur</option>
+            <option>Mymensingh</option>
+          </select>
+
+          <input
+            type="text"
+            placeholder="District"
+            value={district}
+            onChange={(e) => setDistrict(e.target.value)}
+            className="w-full rounded border p-3"
+          />
+
+          <input
+            type="text"
+            placeholder="Area"
+            value={area}
+            onChange={(e) => setArea(e.target.value)}
+            className="w-full rounded border p-3"
+          />
+
+          <textarea
+            placeholder="House, Road, Area Details"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            rows={4}
             className="w-full rounded border p-3"
           />
           <button

@@ -10,6 +10,11 @@ interface User {
   phone: string;
   gender: string;
   birthDate: string;
+
+  division: string;
+  district: string;
+  area: string;
+  address: string;
 }
 
 interface AuthStore {
