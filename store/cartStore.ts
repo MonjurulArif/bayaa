@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Product } from "@/types/products";
+import toast from "react-hot-toast";
 
 interface CartItem extends Product {
   quantity: number;
@@ -17,73 +18,79 @@ interface CartStore {
 }
 
 export const useCartStore = create<CartStore>()(
-  persist((set) => ({
-    items: [],
+  persist(
+    (set) => ({
+      items: [],
 
-    addToCart: (product) =>
-      set((state) => {
-        const existing = state.items.find((item) => item.id === product.id);
-
-        if (existing) {
-          return {
-            items: state.items.map((item) =>
-              item.id === product.id
-                ? {
-                    ...item,
-                    quantity: item.quantity + 1,
-                  }
-                : item,
-            ),
-          };
+      addToCart: (product) => {
+        if (product.stock <= 0) {
+          toast.error("Out of stock! Please select another product.");
+          return;
         }
 
-        return {
-          items: [
-            ...state.items,
-            {
-              ...product,
-              quantity: 1,
-            },
-          ],
-        };
-      }),
+        set((state) => {
+          const existing = state.items.find((item) => item.id === product.id);
 
-    increaseQuantity: (id) =>
-      set((state) => ({
-        items: state.items.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                quantity: item.quantity + 1,
-              }
-            : item,
-        ),
-      })),
+          if (existing) {
+            return {
+              items: state.items.map((item) =>
+                item.id === product.id
+                  ? {
+                      ...item,
+                      quantity: item.quantity + 1,
+                    }
+                  : item,
+              ),
+            };
+          }
 
-    decreaseQuantity: (id) =>
-      set((state) => ({
-        items: state.items.map((item) =>
-          item.id === id && item.quantity > 1
-            ? {
-                ...item,
-                quantity: item.quantity - 1,
-              }
-            : item,
-        ),
-      })),
+          return {
+            items: [
+              ...state.items,
+              {
+                ...product,
+                quantity: 1,
+              },
+            ],
+          };
+        });
+      },
+      increaseQuantity: (id) =>
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === id
+              ? {
+                  ...item,
+                  quantity: item.quantity + 1,
+                }
+              : item,
+          ),
+        })),
 
-    removeFromCart: (id) =>
-      set((state) => ({
-        items: state.items.filter((item) => item.id !== id),
-      })),
+      decreaseQuantity: (id) =>
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === id && item.quantity > 1
+              ? {
+                  ...item,
+                  quantity: item.quantity - 1,
+                }
+              : item,
+          ),
+        })),
 
-    clearCart: () =>
-      set({
-        items: [],
-      }),
-  }),
-  {
-    name: "cart-storage",
-  }
-)
+      removeFromCart: (id) =>
+        set((state) => ({
+          items: state.items.filter((item) => item.id !== id),
+        })),
+
+      clearCart: () =>
+        set({
+          items: [],
+        }),
+    }),
+    {
+      name: "cart-storage",
+    },
+  ),
 );

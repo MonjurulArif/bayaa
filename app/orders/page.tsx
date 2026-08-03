@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useOrderStore } from "@/store/ordersStore";
 import AuthGuard from "@/components/auth/AuthGuard";
 
@@ -16,7 +17,11 @@ export default function OrdersPage() {
         ) : (
           <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order.id} className="border rounded-lg p-4">
+              <Link
+                href={`/orders/${order.id}`}
+                key={order.id}
+                className="block border rounded-lg p-4 hover:bg-gray-50"
+              >
                 <div className="mb-3">
                   <p>
                     <strong>Order ID:</strong> {order.id}
@@ -75,7 +80,7 @@ export default function OrdersPage() {
                 <hr className="my-3" />
 
                 <div className="font-bold">Total: ৳{order.total}</div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

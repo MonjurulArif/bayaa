@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const login = useAuthStore((state) => state.login);
@@ -14,7 +15,7 @@ export default function LoginPage() {
 
   const handleLogin = () => {
     if (!emailOrMobile || !password) {
-      alert("Please enter email or mobile number and password");
+      toast.error("Please enter email or mobile number and password");
       return;
     }
 

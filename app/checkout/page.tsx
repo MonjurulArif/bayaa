@@ -6,6 +6,7 @@ import AuthGuard from "@/components/auth/AuthGuard";
 import { useCartStore } from "@/store/cartStore";
 import { useOrderStore } from "@/store/ordersStore";
 import { useAuthStore } from "@/store/authStore";
+import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = () => {
     if (!name || !phone || !division || !district || !area || !address) {
-      alert("Please fill up all field ");
+      toast.error("Please fill up all field ");
       return;
     }
 

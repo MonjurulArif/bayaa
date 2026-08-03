@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
   const [emailOrMobile, setEmailOrMobile] = useState("");
@@ -12,11 +13,11 @@ export default function SignupPage() {
 
   const handleSignup = () => {
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
-    alert("Account Created");
+    toast.success("Account Created");
   };
   return (
     <div className="mx-auto mt-10 max-w-md rounded-lg border p-6">

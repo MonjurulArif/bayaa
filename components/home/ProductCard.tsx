@@ -7,6 +7,8 @@ import { Heart } from "lucide-react";
 import { Product } from "@/types/products";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import toast from "react-hot-toast";
+import AddToCartButton from "../product/AddToCartButton";
 
 interface Props {
   product: Product;
@@ -22,7 +24,6 @@ export default function ProductCard({ product }: Props) {
     (state) => state.removeFromWishlist,
   );
   const addToWishlist = useWishlistStore((state) => state.addToWishlist);
-  const addToCart = useCartStore((state) => state.addToCart);
 
   const toggleWishlist = () => {
     if (isWishlisted) {
@@ -62,20 +63,22 @@ export default function ProductCard({ product }: Props) {
             )} */}
             </div>
 
-            <div className="mt-2 flex justify-between text-xs text-gray-500">
-              {/* <span>⭐ {product.rating}</span>
-
-            <span>{product.sold} sold</span> */}
+            <div className="mt-1 text-sm text-yellow-500">
+              ⭐ {product.rating} ({product.reviews})
+            </div>
+            <div className="mt-1 text-sm">
+              {product.stock > 0 ? (
+                <span className="text-green-600">
+                  In Stock ({product.stock})
+                </span>
+              ) : (
+                <span className="text-red-600">Out of Stock</span>
+              )}
             </div>
           </div>
         </div>
       </Link>
-      <button
-        onClick={() => addToCart(product)}
-        className="mt-2 w-full rounded bg-black text-white cursor-pointer"
-      >
-        Add To Cart
-      </button>
+      <AddToCartButton product={product} />
     </div>
   );
 }

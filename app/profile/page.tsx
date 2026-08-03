@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import AuthGuard from "@/components/auth/AuthGuard";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
@@ -38,7 +39,7 @@ export default function ProfilePage() {
       address,
     });
 
-    alert("Profile updated successfully!");
+    toast.success("Profile updated successfully!");
   };
 
   return (
