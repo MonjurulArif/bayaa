@@ -16,7 +16,6 @@ interface Props {
 
 export default function ProductCard({ product }: Props) {
   const wishlishItems = useWishlistStore((state) => state.items);
-  const cartItems = useCartStore((state) => state.items);
 
   const isWishlisted = wishlishItems.some((item) => item.id === product.id);
 

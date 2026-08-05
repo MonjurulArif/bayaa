@@ -24,14 +24,25 @@ export const useCartStore = create<CartStore>()(
 
       addToCart: (product) => {
         if (product.stock <= 0) {
-          toast.error("Out of stock! Please select another product.");
+          toast.error("Out of stock");
           return;
         }
 
-        set((state) => {
-          const existing = state.items.find((item) => item.id === product.id);
+        let added = false;
 
-          if (existing) {
+        set((state) => {
+          const existingItem = state.items.find(
+            (item) => item.id === product.id,
+          );
+
+          if (existingItem) {
+            if (existingItem.quantity >= product.stock) {
+              toast.error(`Only ${product.stock} item(s) available in stock.`);
+              return state;
+            }
+
+            added = true;
+
             return {
               items: state.items.map((item) =>
                 item.id === product.id
@@ -44,6 +55,8 @@ export const useCartStore = create<CartStore>()(
             };
           }
 
+          added = true;
+
           return {
             items: [
               ...state.items,
@@ -54,19 +67,34 @@ export const useCartStore = create<CartStore>()(
             ],
           };
         });
+        if (added) {
+          toast.success(`${product.name} is added to cart!`);
+        }
       },
-      increaseQuantity: (id) =>
-        set((state) => ({
-          items: state.items.map((item) =>
-            item.id === id
-              ? {
-                  ...item,
-                  quantity: item.quantity + 1,
-                }
-              : item,
-          ),
-        })),
+      increaseQuantity: (id) => {
+        set((state) => {
+          const item = state.items.find((item) => item.id === id);
 
+          if (!item) return state;
+
+          if (item.quantity >= item.stock) {
+            toast.error(`Only ${item.stock} item(s) available in stock.`);
+
+            return state;
+          }
+
+          return {
+            items: state.items.map((item) =>
+              item.id === id
+                ? {
+                    ...item,
+                    quantity: item.quantity + 1,
+                  }
+                : item,
+            ),
+          };
+        });
+      },
       decreaseQuantity: (id) =>
         set((state) => ({
           items: state.items.map((item) =>
