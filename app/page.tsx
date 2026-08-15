@@ -5,6 +5,7 @@ import Footer from "../components/layout/Footer";
 import HeroBanner from "../components/home/HeroBanner";
 import CategoryGrid from "../components/home/CategoryGrid";
 import ProductGrid from "../components/home/ProductGrid";
+import RecentlyViewed from "../components/home/RecentlyViewed";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
         </section>
 
         <ProductGrid />
+        <RecentlyViewed />
       </main>
       <Footer />
     </>

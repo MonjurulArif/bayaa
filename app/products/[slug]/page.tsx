@@ -7,6 +7,8 @@ import {
   getRelatedProducts,
   getProductsBySlug,
 } from "@/services/product.service";
+import TrackRecentlyViewed from "@/components/product/TrackRecentlyViewed";
+import ProductReviews from "@/components/product/ProductReviews";
 
 export default async function ProductDetails({
   params,
@@ -28,6 +30,7 @@ export default async function ProductDetails({
 
   return (
     <div className="mx-auto max-w-6xl p-6">
+      <TrackRecentlyViewed product={product} />
       <div className="grid gap-8 md:grid-cols-2">
         <ProductGallery image={product.thumbnail} name={product.name} />
 
@@ -42,6 +45,8 @@ export default async function ProductDetails({
           </div>
         </div>
       </div>
+      <ProductReviews productId={product.id} />
+
       <div className="mt-16">
         <h2 className="mb-4 text-2xl font-bold">Related Products</h2>
 
