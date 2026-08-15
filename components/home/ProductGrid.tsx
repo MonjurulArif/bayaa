@@ -1,3 +1,4 @@
+import CategoryFilters from "../category/CategoryFilters";
 import ProductCard from "./ProductCard";
 import { getProducts } from "@/services/product.service";
 

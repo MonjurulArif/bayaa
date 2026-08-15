@@ -40,7 +40,7 @@ export default function ProductCard({ product }: Props) {
         </button>
       </div>
 
-      <Link href={`/products/${product.id}`}>
+      <Link href={`/products/${product.slug}`}>
         <div className="overflow-hidden rounded-lg border bg-white hover:shadow-lg transition cursor-pointer">
           <Image
             src={product.thumbnail}

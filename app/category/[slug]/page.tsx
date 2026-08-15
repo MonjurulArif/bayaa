@@ -2,20 +2,32 @@ import ProductCard from "@/components/home/ProductCard";
 import {
   getProductsByCategory,
   sortProducts,
+  filterProducts,
+  filterByRating,
+  filterByStock,
 } from "@/services/product.service";
 import SortSelect from "@/components/category/SortSelect";
+import CategoryFilters from "@/components/category/CategoryFilters";
 
 export default async function CategoryPage({
   params,
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ sort?: string }>;
+  searchParams: Promise<{
+    sort?: string;
+    price?: string;
+    rating?: string;
+    stock?: string;
+  }>;
 }) {
   const { slug } = await params;
-  const { sort } = await searchParams;
+  const { sort, price, rating, stock } = await searchParams;
 
   let products = await getProductsByCategory(slug);
+  products = await filterProducts(products, price);
+  products = await filterByRating(products, rating);
+  products = await filterByStock(products, stock);
   products = await sortProducts(products, sort);
 
   return (
@@ -24,6 +36,7 @@ export default async function CategoryPage({
 
       <div className="mb-6">
         <SortSelect slug={slug} sort={sort} />
+        <CategoryFilters slug={slug} />
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">

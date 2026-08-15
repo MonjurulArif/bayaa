@@ -1,9 +1,9 @@
 import { Product } from "@/types/products";
-
 export const products: Product[] = [
   {
     id: 1,
     name: "Airbuds Pro Gen 3",
+    slug: "airbuds-pro-gen-3",
     price: 1999,
     thumbnail: "/products/airbuds.jpg",
     category: "electronics",
@@ -15,6 +15,7 @@ export const products: Product[] = [
   {
     id: 2,
     name: "Smart Watch",
+    slug: "smart-watch",
     price: 2999,
     thumbnail: "/products/smartwatch.jpg",
     category: "electronics",
@@ -26,6 +27,7 @@ export const products: Product[] = [
   {
     id: 3,
     name: "Power Bank",
+    slug: "power-bank",
     price: 1499,
     thumbnail: "/products/powerbank.jpg",
     category: "electronics",
@@ -37,6 +39,7 @@ export const products: Product[] = [
   {
     id: 4,
     name: "Gaming Mouse",
+    slug: "gaming-mouse",
     price: 1299,
     thumbnail: "/products/airbuds.jpg",
     category: "electronics",
@@ -48,6 +51,7 @@ export const products: Product[] = [
   {
     id: 5,
     name: "Mechanical Keyboard",
+    slug: "mechanical-keyboard",
     price: 3499,
     thumbnail: "/products/smartwatch.jpg",
     category: "electronics",
@@ -60,6 +64,7 @@ export const products: Product[] = [
   {
     id: 6,
     name: "Men's Casual T-Shirt",
+    slug: "mens-casual-t-shirt",
     price: 699,
     thumbnail: "/products/smartwatch.jpg",
     category: "fashion",
@@ -71,6 +76,7 @@ export const products: Product[] = [
   {
     id: 7,
     name: "Men's Hoodie",
+    slug: "mens-hoodie",
     price: 1499,
     thumbnail: "/products/airbuds.jpg",
     category: "fashion",
@@ -82,6 +88,7 @@ export const products: Product[] = [
   {
     id: 8,
     name: "Blue Denim Jeans",
+    slug: "blue-denim-jeans",
     price: 1799,
     thumbnail: "/products/airbuds.jpg",
     category: "fashion",
@@ -93,6 +100,7 @@ export const products: Product[] = [
   {
     id: 9,
     name: "Women's Handbag",
+    slug: "womens-handbag",
     price: 1299,
     thumbnail: "/products/smartwatch.jpg",
     category: "fashion",
@@ -104,6 +112,7 @@ export const products: Product[] = [
   {
     id: 10,
     name: "Running Shoes",
+    slug: "running-shoes",
     price: 2499,
     thumbnail: "/products/smartwatch.jpg",
     category: "fashion",
@@ -116,6 +125,7 @@ export const products: Product[] = [
   {
     id: 11,
     name: "Atomic Habits",
+    slug: "atomic-habits",
     price: 450,
     thumbnail: "/products/smartwatch.jpg",
     category: "books",
@@ -127,6 +137,7 @@ export const products: Product[] = [
   {
     id: 12,
     name: "Clean Code",
+    slug: "clean-code",
     price: 850,
     thumbnail: "/products/smartwatch.jpg",
     category: "books",
@@ -138,6 +149,7 @@ export const products: Product[] = [
   {
     id: 13,
     name: "The Psychology of Money",
+    slug: "the-psychology-of-money",
     price: 550,
     thumbnail: "/products/smartwatch.jpg",
     category: "books",
@@ -149,6 +161,7 @@ export const products: Product[] = [
   {
     id: 14,
     name: "Deep Work",
+    slug: "deep-work",
     price: 500,
     thumbnail: "/products/smartwatch.jpg",
     category: "books",
@@ -160,6 +173,7 @@ export const products: Product[] = [
   {
     id: 15,
     name: "Think and Grow Rich",
+    slug: "think-and-grow-rich",
     price: 400,
     thumbnail: "/products/smartwatch.jpg",
     category: "books",
@@ -172,6 +186,7 @@ export const products: Product[] = [
   {
     id: 16,
     name: "Football",
+    slug: "football",
     price: 899,
     thumbnail: "/products/smartwatch.jpg",
     category: "sports",
@@ -183,6 +198,7 @@ export const products: Product[] = [
   {
     id: 17,
     name: "Cricket Bat",
+    slug: "cricket-bat",
     price: 1899,
     thumbnail: "/products/smartwatch.jpg",
     category: "sports",
@@ -194,6 +210,7 @@ export const products: Product[] = [
   {
     id: 18,
     name: "Badminton Racket",
+    slug: "badminton-racket",
     price: 999,
     thumbnail: "/products/smartwatch.jpg",
     category: "sports",
@@ -204,11 +221,12 @@ export const products: Product[] = [
   },
   {
     id: 19,
-    name: "Yoga Mat",
+    name: "KZ earphones",
+    slug: "kz-earphones",
     price: 799,
     thumbnail: "/products/smartwatch.jpg",
-    category: "sports",
-    description: "Comfortable exercise mat",
+    category: "electronics",
+    description: "KZ earphones with good sound quality",
     rating: 4.5,
     reviews: 204,
     stock: 42,
@@ -216,6 +234,7 @@ export const products: Product[] = [
   {
     id: 20,
     name: "Gym Gloves",
+    slug: "gym-gloves",
     price: 599,
     thumbnail: "/products/smartwatch.jpg",
     category: "sports",
