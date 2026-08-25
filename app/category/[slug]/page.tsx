@@ -1,11 +1,5 @@
 import ProductCard from "@/components/home/ProductCard";
-import {
-  getProductsByCategory,
-  sortProducts,
-  filterProducts,
-  filterByRating,
-  filterByStock,
-} from "@/services/product.service";
+import { getProductsByCategory } from "@/services/product.service";
 import SortSelect from "@/components/category/SortSelect";
 import CategoryFilters from "@/components/category/CategoryFilters";
 
@@ -19,16 +13,30 @@ export default async function CategoryPage({
     price?: string;
     rating?: string;
     stock?: string;
+    page?: string;
   }>;
 }) {
   const { slug } = await params;
-  const { sort, price, rating, stock } = await searchParams;
+  const { sort, price, rating, stock, page } = await searchParams;
 
-  let products = await getProductsByCategory(slug);
-  products = await filterProducts(products, price);
-  products = await filterByRating(products, rating);
-  products = await filterByStock(products, stock);
-  products = await sortProducts(products, sort);
+  const result = await getProductsByCategory(slug, {
+    sort,
+    minPrice:
+      price === "under1000"
+        ? undefined
+        : price === "1000to2000"
+          ? 1000
+          : price === "above2000"
+            ? 2000
+            : undefined,
+    maxPrice:
+      price === "under1000" ? 999 : price === "1000to2000" ? 2000 : undefined,
+    inStock: stock === "true",
+    page: Number(page ?? 1),
+    pageSize: 20,
+  });
+
+  const products = result.products;
 
   return (
     <div className="mx-auto max-w-7xl p-6">

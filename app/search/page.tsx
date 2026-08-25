@@ -1,5 +1,5 @@
 import ProductCard from "@/components/home/ProductCard";
-import { searchProducts, sortProducts } from "@/services/product.service";
+import { searchProducts } from "@/services/product.service";
 import SearchSortSelect from "@/components/search/SearchSortSelect";
 
 export default async function SearchPage({
@@ -18,9 +18,16 @@ export default async function SearchPage({
     );
   }
 
-  let products = query ? await searchProducts(query) : [];
+  const result = query
+    ? await searchProducts(query)
+    : {
+        products: [],
+        totalProducts: 0,
+        page: 1,
+        pageSize: 20,
+      };
 
-  products = await sortProducts(products, sort);
+  const products = result.products;
 
   if (products.length === 0) {
     return (

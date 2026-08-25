@@ -1,9 +1,12 @@
-import CategoryFilters from "../category/CategoryFilters";
 import ProductCard from "./ProductCard";
 import { getProducts } from "@/services/product.service";
 
 export default async function ProductGrid() {
-  const products = await getProducts();
+  const result = await getProducts({
+    page: 1,
+    pageSize: 20,
+  });
+  const products = result.products;
 
   return (
     <section className="mx-auto max-w-7xl p-4">

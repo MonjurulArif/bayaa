@@ -1,87 +1,167 @@
 import { products } from "@/data/products";
 import { Product } from "@/types/products";
 
-export async function getProducts() {
-  return products;
+const API_URL = "http://localhost:5091/api";
+
+export interface ProductQuery {
+  search?: string;
+  categoryId?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  inStock?: boolean;
+  sort?: string;
+  page?: number;
+  pageSize?: number;
 }
 
-export async function getProductById(id: number) {
-  return products.find((p) => p.id === id);
+export interface ProductResponse {
+  totalProducts: number;
+  page: number;
+  pageSize: number;
+  products: Product[];
 }
 
-export async function getProductsByCategory(slug: string) {
-  return products.filter((p) => p.category === slug);
+// Get products with search, filtering, sorting and pagination
+export async function getProducts(
+  query: ProductQuery = {},
+): Promise<ProductResponse> {
+  const params = new URLSearchParams();
+
+  if (query.search) {
+    params.set("search", query.search);
+  }
+
+  if (query.categoryId !== undefined) {
+    params.set("categoryId", query.categoryId.toString());
+  }
+
+  if (query.minPrice !== undefined) {
+    params.set("minPrice", query.minPrice.toString());
+  }
+
+  if (query.maxPrice !== undefined) {
+    params.set("maxPrice", query.maxPrice.toString());
+  }
+
+  if (query.inStock !== undefined) {
+    params.set("inStock", query.inStock.toString());
+  }
+
+  if (query.sort) {
+    params.set("sort", query.sort);
+  }
+
+  params.set("page", (query.page ?? 1).toString());
+  params.set("pageSize", (query.pageSize ?? 20).toString());
+
+  const response = await fetch(`${API_URL}/products?${params.toString()}`);
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to fetch products: ${response.status} ${text}`);
+  }
+
+  return response.json();
 }
 
-export async function searchProducts(query: string) {
-  const search = query.toLowerCase();
+// Get a single product by ID
+export async function getProductById(id: number): Promise<Product | undefined> {
+  const response = await fetch(`${API_URL}/products/${id}`);
 
-  return products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search) ||
-      p.description.toLowerCase().includes(search),
+  if (response.status === 404) {
+    return undefined;
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch product");
+  }
+
+  return response.json();
+}
+
+// Get product by slug
+export async function getProductsBySlug(slug: string): Promise<Product | null> {
+  const response = await fetch(
+    `${API_URL}/products/slug/${encodeURIComponent(slug)}`,
   );
-}
 
-export async function sortProducts(products: Product[], sort?: string) {
-  const sorted = [...products];
-
-  switch (sort) {
-    case "price-asc":
-      sorted.sort((a, b) => a.price - b.price);
-      break;
-
-    case "price-desc":
-      sorted.sort((a, b) => b.price - a.price);
-      break;
-
-    case "name":
-      sorted.sort((a, b) => a.name.localeCompare(b.name));
-      break;
+  if (response.status === 404) {
+    return null;
   }
 
-  return sorted;
+  if (!response.ok) {
+    console.log("Status:", response.status);
+    console.log("URL:", response.url);
+
+    const text = await response.text();
+    console.log(text);
+
+    throw new Error(`Failed: ${response.status}`);
+  }
+
+  return response.json();
 }
 
+// Get products by category slug
+export async function getProductsByCategory(
+  slug: string,
+  query: Omit<ProductQuery, "categoryId"> = {},
+): Promise<ProductResponse> {
+  const params = new URLSearchParams();
+
+  if (query.minPrice !== undefined) {
+    params.set("minPrice", query.minPrice.toString());
+  }
+
+  if (query.maxPrice !== undefined) {
+    params.set("maxPrice", query.maxPrice.toString());
+  }
+
+  if (query.inStock !== undefined) {
+    params.set("inStock", query.inStock.toString());
+  }
+
+  if (query.sort) {
+    params.set("sort", query.sort);
+  }
+
+  params.set("page", (query.page ?? 1).toString());
+  params.set("pageSize", (query.pageSize ?? 20).toString());
+
+  const response = await fetch(
+    `${API_URL}/products/category/${encodeURIComponent(slug)}?${params.toString()}`,
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch products by category");
+  }
+
+  return response.json();
+}
+
+// Search products
+export async function searchProducts(
+  query: string,
+  page = 1,
+  pageSize = 20,
+): Promise<ProductResponse> {
+  return getProducts({
+    search: query,
+    page,
+    pageSize,
+  });
+}
+
+// Get related products
 export async function getRelatedProducts(
-  category: string,
+  categoryId: number,
   currentProductId: number,
-) {
-  return products
-    .filter(
-      (product) =>
-        product.category === category && product.id !== currentProductId,
-    )
-    .slice(0, 8);
-}
+): Promise<Product[]> {
+  const response = await getProducts({
+    categoryId,
+    page: 1,
+    pageSize: 8,
+  });
 
-export async function getProductsBySlug(slug: string) {
-  return products.find((product) => product.slug === slug);
-}
-
-export async function filterProducts(products: Product[], price?: string) {
-  if (!price) return products;
-
-  switch (price) {
-    case "under1000":
-      return products.filter((p) => p.price < 1000);
-    case "1000to2000":
-      return products.filter((p) => p.price >= 1000 && p.price <= 2000);
-    case "above2000":
-      return products.filter((p) => p.price > 2000);
-    default:
-      return products;
-  }
-}
-
-export async function filterByRating(products: Product[], rating?: string) {
-  if (!rating) return products;
-
-  return products.filter((p) => p.rating >= Number(rating));
-}
-
-export async function filterByStock(products: Product[], stock?: string) {
-  if (stock !== "true") return products;
-
-  return products.filter((p) => p.stock > 0);
+  return response.products.filter((product) => product.id !== currentProductId);
 }

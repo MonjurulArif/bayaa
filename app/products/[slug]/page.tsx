@@ -24,7 +24,7 @@ export default async function ProductDetails({
   }
 
   const relatedProducts = await getRelatedProducts(
-    product.category,
+    product.categoryId,
     product.id,
   );
 

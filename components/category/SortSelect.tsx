@@ -25,7 +25,9 @@ export default function SortSelect({
 
       <option value="price-desc">Price: High to Low</option>
 
-      <option value="name">Name A-Z</option>
+      <option value="name-asc">Name A-Z</option>
+
+      <option value="name-desc">Name Z-A</option>
     </select>
   );
 }
