@@ -1,13 +1,13 @@
 import ProductCard from "@/components/home/ProductCard";
-import { searchProducts } from "@/services/product.service";
 import SearchSortSelect from "@/components/search/SearchSortSelect";
+import { getProducts } from "@/services/product.service";
 
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ query?: string; sort?: string }>;
+  searchParams: Promise<{ query?: string; sort?: string; page?: string }>;
 }) {
-  const { query, sort } = await searchParams;
+  const { query, sort, page } = await searchParams;
 
   if (!query) {
     return (
@@ -18,14 +18,12 @@ export default async function SearchPage({
     );
   }
 
-  const result = query
-    ? await searchProducts(query)
-    : {
-        products: [],
-        totalProducts: 0,
-        page: 1,
-        pageSize: 20,
-      };
+  const result = await getProducts({
+    search: query,
+    sort,
+    page: Number(page ?? 1),
+    pageSize: 20,
+  });
 
   const products = result.products;
 

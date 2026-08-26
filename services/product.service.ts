@@ -1,4 +1,3 @@
-import { products } from "@/data/products";
 import { Product } from "@/types/products";
 
 const API_URL = "http://localhost:5091/api";
@@ -9,6 +8,7 @@ export interface ProductQuery {
   minPrice?: number;
   maxPrice?: number;
   inStock?: boolean;
+  rating?: number;
   sort?: string;
   page?: number;
   pageSize?: number;
@@ -43,6 +43,10 @@ export async function getProducts(
     params.set("maxPrice", query.maxPrice.toString());
   }
 
+  if (query.rating !== undefined) {
+    params.set("rating", query.rating.toString());
+  }
+
   if (query.inStock !== undefined) {
     params.set("inStock", query.inStock.toString());
   }
@@ -54,7 +58,9 @@ export async function getProducts(
   params.set("page", (query.page ?? 1).toString());
   params.set("pageSize", (query.pageSize ?? 20).toString());
 
-  const response = await fetch(`${API_URL}/products?${params.toString()}`);
+  const response = await fetch(`${API_URL}/products?${params.toString()}`, {
+    cache: "no-store",
+  });
 
   if (!response.ok) {
     const text = await response.text();
@@ -80,13 +86,15 @@ export async function getProductById(id: number): Promise<Product | undefined> {
 }
 
 // Get product by slug
-export async function getProductsBySlug(slug: string): Promise<Product | null> {
+export async function getProductsBySlug(
+  slug: string,
+): Promise<Product | undefined> {
   const response = await fetch(
-    `${API_URL}/products/slug/${encodeURIComponent(slug)}`,
+    `${API_URL}/products/${encodeURIComponent(slug)}`,
   );
 
   if (response.status === 404) {
-    return null;
+    return undefined;
   }
 
   if (!response.ok) {

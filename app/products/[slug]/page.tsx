@@ -23,10 +23,9 @@ export default async function ProductDetails({
     return <div className="p-6">Product Not Found</div>;
   }
 
-  const relatedProducts = await getRelatedProducts(
-    product.categoryId,
-    product.id,
-  );
+  const relatedProducts = product.categoryId
+    ? await getRelatedProducts(product.categoryId, product.id)
+    : [];
 
   return (
     <div className="mx-auto max-w-6xl p-6">

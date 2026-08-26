@@ -4,6 +4,7 @@ export interface Product {
   name: string;
   price: number;
   thumbnail: string;
+  categoryId: number | null;
   category: string;
   description: string;
   rating: number;
