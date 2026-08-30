@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
-
 import Link from "next/link";
 
 export default function AccountMenu() {
@@ -14,6 +13,7 @@ export default function AccountMenu() {
 
   const handleLogout = () => {
     logout();
+    setOpen(false);
     router.push("/login");
   };
 

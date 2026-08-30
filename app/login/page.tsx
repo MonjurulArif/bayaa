@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { loginUser } from "@/services/auth.service";
 
 export default function LoginPage() {
   const login = useAuthStore((state) => state.login);
@@ -13,29 +14,19 @@ export default function LoginPage() {
   const [emailOrMobile, setEmailOrMobile] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    if (!emailOrMobile || !password) {
-      toast.error("Please enter email or mobile number and password");
-      return;
+  const handleLogin = async () => {
+    try {
+      const data = await loginUser(emailOrMobile, password);
+
+      login(data.token, data.user);
+
+      toast.success("Login successful");
+
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+      toast.error(error instanceof Error ? error.message : "Login failed");
     }
-
-    login({
-      emailOrMobile,
-
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      gender: "",
-      birthDate: "",
-
-      division: "",
-      district: "",
-      area: "",
-      address: "",
-    });
-
-    router.push("/");
   };
 
   return (
@@ -59,6 +50,7 @@ export default function LoginPage() {
       />
 
       <button
+        type="button"
         onClick={handleLogin}
         className="w-full rounded bg-black py-3 text-white cursor-pointer"
       >

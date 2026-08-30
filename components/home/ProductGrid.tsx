@@ -4,7 +4,7 @@ import { useState } from "react";
 import ProductCard from "./ProductCard";
 import { Product } from "@/types/products";
 
-const API_URL = "http://localhost:5091/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 interface ProductGridProps {
   initialProducts: Product[];
