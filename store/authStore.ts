@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface User {
+export interface User {
   id: number;
 
   // Authentication / account
@@ -9,7 +9,8 @@ interface User {
   mobile?: string;
 
   // Profile
-  fullName?: string;
+  firstName?: string;
+  lastName?: string;
   gender?: string;
   birthDate?: string;
 

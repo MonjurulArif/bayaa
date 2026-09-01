@@ -1,46 +1,94 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import AuthGuard from "@/components/auth/AuthGuard";
-import Link from "next/link";
 import toast from "react-hot-toast";
+import {
+  getProfile,
+  updateProfile as updateProfileApi,
+} from "@/services/profile.service";
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
 
-  const updateProfile = useAuthStore((state) => state.updateProfile);
+  const updateProfileStore = useAuthStore((state) => state.updateProfile);
 
-  const [firstName, setFirstName] = useState(user?.firstName || "");
-  const [lastName, setLastName] = useState(user?.lastName || "");
-  const [email, setEmail] = useState(user?.email || "");
-  const [phone, setPhone] = useState(user?.phone || "");
-  const [gender, setGender] = useState(user?.gender || "");
-  const [birthDate, setBirthDate] = useState(user?.birthDate || "");
-  const [division, setDivision] = useState(user?.division || "");
-  const [district, setDistrict] = useState(user?.district || "");
-  const [area, setArea] = useState(user?.area || "");
-  const [address, setAddress] = useState(user?.address || "");
+  const [loading, setLoading] = useState(true);
 
-  const handleSave = () => {
-    updateProfile({
-      firstName,
-      lastName,
-      email,
-      phone,
-      gender,
-      birthDate,
+  const [firstName, setFirstName] = useState(user?.firstName ?? "");
+  const [lastName, setLastName] = useState(user?.lastName ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
+  const [mobile, setMobile] = useState(user?.mobile ?? "");
+  const [gender, setGender] = useState(user?.gender ?? "");
+  const [birthDate, setBirthDate] = useState(user?.birthDate ?? "");
+  const [division, setDivision] = useState(user?.division ?? "");
+  const [district, setDistrict] = useState(user?.district ?? "");
+  const [area, setArea] = useState(user?.area ?? "");
+  const [address, setAddress] = useState(user?.address ?? "");
 
-      division,
-      district,
-      area,
-      address,
-    });
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await getProfile();
 
-    toast.success("Profile updated successfully!");
+        setFirstName(profile.firstName ?? "");
+        setLastName(profile.lastName ?? "");
+        setEmail(profile.email ?? "");
+        setMobile(profile.mobile ?? "");
+        setGender(profile.gender ?? "");
+        setBirthDate(profile.birthDate ? profile.birthDate.split("T")[0] : "");
+        setDivision(profile.division ?? "");
+        setDistrict(profile.district ?? "");
+        setArea(profile.area ?? "");
+        setAddress(profile.address ?? "");
+
+        updateProfileStore(profile);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, [updateProfileStore]);
+
+  const handleSave = async () => {
+    try {
+      const profileData = {
+        firstName,
+        lastName,
+        email,
+        mobile,
+        gender,
+        birthDate,
+        division,
+        district,
+        area,
+        address,
+      };
+
+      await updateProfileApi(profileData);
+
+      updateProfileStore(profileData);
+
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update profile");
+    }
   };
+
+  if (loading) {
+    return (
+      <AuthGuard>
+        <div className="p-6">Loading profile...</div>
+      </AuthGuard>
+    );
+  }
 
   return (
     <AuthGuard>
@@ -74,9 +122,9 @@ export default function ProfilePage() {
 
           <input
             type="text"
-            placeholder="Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Mobile Number"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
             className="w-full rounded border p-3"
           />
           <select
