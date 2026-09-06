@@ -1,11 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { useOrderStore } from "@/store/ordersStore";
+import { useEffect, useState } from "react";
 import AuthGuard from "@/components/auth/AuthGuard";
+import { getOrders } from "@/services/order.service";
+
+interface OrderItem {
+  productId: number;
+  productName: string;
+  unitPrice: number;
+  quantity: number;
+}
+
+interface Order {
+  id: number;
+  orderNumber: string;
+  totalAmount: number;
+  status: string;
+  createdAt: string;
+  items: OrderItem[];
+}
 
 export default function OrdersPage() {
-  const { orders } = useOrderStore();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      try {
+        const data = await getOrders();
+        setOrders(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadOrders();
+  }, []);
+
+  if (loading) {
+    return (
+      <AuthGuard>
+        <div className="p-6">Loading orders...</div>
+      </AuthGuard>
+    );
+  }
 
   return (
     <AuthGuard>
@@ -26,60 +66,41 @@ export default function OrdersPage() {
                   <p>
                     <strong>Order ID:</strong> {order.id}
                   </p>
+                  <p>
+                    <strong>Order No: </strong> {order.orderNumber}
+                  </p>
 
                   <p>
-                    <strong>Date:</strong> {order.date}
+                    <strong>Date:</strong> <strong>Date:</strong>{" "}
+                    {`${String(new Date(order.createdAt).getDate()).padStart(2, "0")}-${new Date(
+                      order.createdAt,
+                    ).toLocaleString("en-US", { month: "short" })}-${new Date(
+                      order.createdAt,
+                    ).getFullYear()}`}
                   </p>
 
                   <p>
                     <strong>Status:</strong> {order.status}
                   </p>
-
-                  <p>
-                    <strong>Customer:</strong> {order.customerName}
-                  </p>
-
-                  <p>
-                    <strong>Phone:</strong> {order.phone}
-                  </p>
-
-                  {order.email && (
-                    <p>
-                      <strong>Email:</strong> {order.email}
-                    </p>
-                  )}
-
-                  <p>
-                    <strong>Address:</strong> {order.area}, {order.district},{" "}
-                    {order.division}
-                  </p>
-
-                  <p>
-                    <strong>Details:</strong> {order.address}
-                  </p>
-
-                  <p>
-                    <strong>Payment:</strong> {order.paymentMethod}
-                  </p>
                 </div>
 
                 <div className="space-y-2">
                   {order.items.map((item) => (
-                    <div key={item.id} className="flex justify-between">
+                    <div key={item.productId} className="flex justify-between">
                       <span>
-                        {item.name}
+                        {item.productName}
                         {" × "}
                         {item.quantity}
                       </span>
 
-                      <span>৳{item.price * item.quantity}</span>
+                      <span>৳{item.unitPrice * item.quantity}</span>
                     </div>
                   ))}
                 </div>
 
                 <hr className="my-3" />
 
-                <div className="font-bold">Total: ৳{order.total}</div>
+                <div className="font-bold">Total: ৳{order.totalAmount}</div>
               </Link>
             ))}
           </div>

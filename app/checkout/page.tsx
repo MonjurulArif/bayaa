@@ -4,29 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthGuard from "@/components/auth/AuthGuard";
 import { useCartStore } from "@/store/cartStore";
-import { useOrderStore } from "@/store/ordersStore";
 import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
+import { createOrder } from "@/services/order.service";
 
 export default function CheckoutPage() {
   const router = useRouter();
 
-  const cartItems = useCartStore((state) => state.items);
-
-  const subTotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-
-  const deliveryCharge = 70;
-
-  const grandTotal = subTotal + deliveryCharge;
+  const cart = useCartStore((state) => state.items);
 
   const user = useAuthStore((state) => state.user);
-
-  const loginValue = user?.emailOrMobile || "";
-
-  const isEmail = loginValue.includes("@");
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -37,54 +24,90 @@ export default function CheckoutPage() {
   const [area, setArea] = useState("");
   const [address, setAddress] = useState("");
 
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [placingOrder, setPlacingOrder] = useState(false);
+
+  const subtotal = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+
+  const deliveryCharge = 70;
+
+  const total = subtotal + deliveryCharge;
+
   useEffect(() => {
     if (!user) return;
 
     setName(`${user.firstName ?? ""} ${user.lastName ?? ""}`.trim());
-    setPhone(user.phone || (!isEmail ? loginValue : ""));
-    setEmail(user.email || (isEmail ? loginValue : ""));
 
-    setDivision(user.division || "");
-    setDistrict(user.district || "");
-    setArea(user.area || "");
-    setAddress(user.address || "");
-  }, [user, email, loginValue]);
+    setPhone(user.mobile ?? "");
+    setEmail(user.email ?? "");
 
-  const [paymentMethod, setPaymentMethod] = useState("COD");
-
-  const addOrder = useOrderStore((state) => state.addOrder);
+    setDivision(user.division ?? "");
+    setDistrict(user.district ?? "");
+    setArea(user.area ?? "");
+    setAddress(user.address ?? "");
+  }, [user]);
 
   const clearCart = useCartStore((state) => state.clearCart);
 
-  const handlePlaceOrder = () => {
-    if (!name || !phone || !division || !district || !area || !address) {
-      toast.error("Please fill up all field ");
+  const handlePlaceOrder = async () => {
+    if (cart.length === 0) {
+      toast.error("Your cart is empty");
       return;
     }
 
-    addOrder({
-      id: `ORD-${Date.now()}`,
-      date: new Date().toLocaleDateString(),
+    if (
+      !name.trim() ||
+      !phone.trim() ||
+      !division.trim() ||
+      !district.trim() ||
+      !area.trim() ||
+      !address.trim()
+    ) {
+      toast.error("Please fill up all delivery information");
+      return;
+    }
 
-      items: cartItems,
-      total: grandTotal,
-      status: "pending",
+    if (!paymentMethod) {
+      toast.error("Please select a payment method");
+      return;
+    }
 
-      customerName: name,
-      phone,
-      email,
+    try {
+      setPlacingOrder(true);
+      const order = await createOrder({
+        items: cart.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+        })),
 
-      division,
-      district,
-      area,
-      address,
+        customerName: name.trim(),
+        mobile: phone.trim(),
+        email: email.trim() || undefined,
 
-      paymentMethod,
-    });
+        division: division.trim(),
+        district: district.trim(),
+        area: area.trim(),
+        address: address.trim(),
 
-    clearCart();
+        paymentMethod,
+      });
 
-    router.push("/orders");
+      clearCart();
+
+      toast.success("Order placed successfully");
+
+      router.push(`/orders/${order.id}`);
+    } catch (error) {
+      console.error("Order creation failed: ", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to place order",
+      );
+    } finally {
+      setPlacingOrder(false);
+    }
   };
 
   return (
@@ -171,8 +194,8 @@ export default function CheckoutPage() {
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
-                    checked={paymentMethod === "bkash"}
-                    onChange={() => setPaymentMethod("bkash")}
+                    checked={paymentMethod === "Bkash"}
+                    onChange={() => setPaymentMethod("Bkash")}
                   />
                   bKash
                 </label>
@@ -180,17 +203,24 @@ export default function CheckoutPage() {
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
-                    checked={paymentMethod === "nagad"}
-                    onChange={() => setPaymentMethod("nagad")}
+                    checked={paymentMethod === "Nagad"}
+                    onChange={() => setPaymentMethod("Nagad")}
                   />
                   Nagad
                 </label>
-
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
-                    checked={paymentMethod === "card"}
-                    onChange={() => setPaymentMethod("card")}
+                    checked={paymentMethod === "Rocket"}
+                    onChange={() => setPaymentMethod("Rocket")}
+                  />
+                  Rocket
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={paymentMethod === "Card"}
+                    onChange={() => setPaymentMethod("Card")}
                   />
                   Card
                 </label>
@@ -201,7 +231,7 @@ export default function CheckoutPage() {
           <div>
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="border rounded-lg p-4">
-              {cartItems.map((item) => (
+              {cart.map((item) => (
                 <div key={item.id} className="flex justify-between">
                   <span>
                     {item.name} x {item.quantity}
@@ -210,23 +240,31 @@ export default function CheckoutPage() {
                 </div>
               ))}
               <hr className="my-4" />
-              <div className="flex justify-between font-bold text-lg">
-                <span>Subtotal: </span>
-                <span>৳{subTotal}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Delivery</span>
-                <span>৳{deliveryCharge}</span>
-              </div>
-              <div className="flex justify-between font-bold text-lg">
-                <span>Total</span>
-                <span>৳{grandTotal}</span>
+              <div>
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>৳{subtotal}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Delivery Charge</span>
+                  <span>৳{deliveryCharge}</span>
+                </div>
+
+                <hr className="my-3" />
+
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Total</span>
+                  <span>৳{total}</span>
+                </div>
               </div>
               <button
+                type="button"
                 onClick={handlePlaceOrder}
-                className="mt-6 w-full rounded bg-black py-3 text-white cursor-pointer"
+                disabled={placingOrder || cart.length === 0}
+                className="mt-6 w-full rounded bg-black py-3 text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Place Order
+                {placingOrder ? "Placing Order..." : "Place Order"}
               </button>
             </div>
           </div>
