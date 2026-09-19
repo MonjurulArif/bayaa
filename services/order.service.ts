@@ -33,7 +33,7 @@ export async function createOrder(payload: CreateOrderPayload) {
 }
 
 export async function getOrders() {
-  const response = await apiFetch("/orders");
+  const response = await apiFetch(`/orders`);
 
   if (!response.ok) {
     throw new Error("Failed to load orders");
@@ -47,6 +47,19 @@ export async function getOrder(id: number) {
 
   if (!response.ok) {
     throw new Error("Failed to load order");
+  }
+
+  return response.json();
+}
+
+export async function updateOrderStatus(orderId: number, status: string) {
+  const response = await apiFetch(`/orders/${orderId}/status`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update order status");
   }
 
   return response.json();
