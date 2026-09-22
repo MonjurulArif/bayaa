@@ -5,30 +5,63 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 
 import { Product } from "@/types/products";
-import { useCartStore } from "@/store/cartStore";
-import { useWishlistStore } from "@/store/wishlistStore";
+import {
+  addWishlist,
+  removeWishlist,
+  getWishlist,
+} from "@/services/wishlist.service";
+
 import toast from "react-hot-toast";
 import AddToCartButton from "../product/AddToCartButton";
+import { useAuthStore } from "@/store/authStore";
+import { useWishlistStore } from "@/store/wishlistStore";
 
 interface Props {
   product: Product;
 }
 
 export default function ProductCard({ product }: Props) {
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+
   const wishlishItems = useWishlistStore((state) => state.items);
+
+  const addToWishlistItem = useWishlistStore((state) => state.addWishlistItem);
+
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeWishlistItem,
+  );
 
   const isWishlisted = wishlishItems.some((item) => item.id === product.id);
 
-  const removeFromWishlist = useWishlistStore(
-    (state) => state.removeFromWishlist,
-  );
-  const addToWishlist = useWishlistStore((state) => state.addToWishlist);
+  const toggleWishlist = async () => {
+    if (!isLoggedIn) {
+      toast.error("Please login to add to wishlist");
+      return;
+    }
+    try {
+      if (isWishlisted) {
+        await removeFromWishlist(product.id);
 
-  const toggleWishlist = () => {
-    if (isWishlisted) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
+        removeWishlist(product.id);
+
+        toast.success("Removed from wishlist");
+      } else {
+        await addWishlist(product.id);
+
+        addToWishlistItem({
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          price: product.price,
+          thumbnail: product.thumbnail,
+          rating: product.rating,
+        });
+
+        toast.success("Added to wishlist");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to add to wishlist");
     }
   };
 

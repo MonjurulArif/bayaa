@@ -19,7 +19,7 @@ export interface CreateOrderPayload {
 }
 
 export async function createOrder(payload: CreateOrderPayload) {
-  const response = await apiFetch("/orders", {
+  const response = await apiFetch(`/orders`, {
     method: "POST",
     body: JSON.stringify(payload),
   });

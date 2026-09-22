@@ -7,12 +7,34 @@ import AccountMenu from "./AccountMenu";
 import CategoriesMenu from "./CategoriesMenu";
 import { useAuthStore } from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
+import { getWishlist } from "@/services/wishlist.service";
+import { useEffect } from "react";
 import { useWishlistStore } from "@/store/wishlistStore";
 
 export default function Header() {
   const auth = useAuthStore((state) => state.isLoggedIn);
 
   const wishListItems = useWishlistStore((state) => state.items);
+
+  const setWishlist = useWishlistStore((state) => state.setWishlist);
+
+  useEffect(() => {
+    if (!auth) {
+      setWishlist([]);
+      return;
+    }
+
+    const loadWishlist = async () => {
+      try {
+        const data = await getWishlist();
+        setWishlist(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    loadWishlist();
+  }, [auth, setWishlist]);
 
   const cartCount = useCartStore((state) =>
     state.items.reduce((total, item) => total + item.quantity, 0),
