@@ -9,9 +9,13 @@ export default function ProductInfo({ product }: Props) {
     <div>
       <h1 className="text-3xl font-bold ">{product.name}</h1>
       <div className="mt-2">
-        <span className="text-yellow-500">⭐ {product.rating}</span>
-
-        <span className="ml-2 text-gray-500">({product.reviews} reviews)</span>
+        {product.reviews > 0 ? (
+          <span>
+            ⭐ {product.rating} ({product.reviews})
+          </span>
+        ) : (
+          <span className="text-gray-500">No reviews yet</span>
+        )}
       </div>
 
       <p className="mt-4 text-2xl text-red-600 font-bold">৳ {product.price}</p>
