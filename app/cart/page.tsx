@@ -2,13 +2,40 @@
 
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
+import {
+  getCart,
+  updateCartItem,
+  removeCartItem,
+} from "@/services/cart.service";
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
 
-  const increaseQuantity = useCartStore((state) => state.increaseQuantity);
-  const decreaseQuantity = useCartStore((state) => state.decreaseQuantity);
-  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const setCart = useCartStore((state) => state.setCart);
+
+  const handleQuantityChange = async (productId: number, quantity: number) => {
+    try {
+      await updateCartItem(productId, quantity);
+
+      const cart = await getCart();
+
+      setCart(cart);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveFromCart = async (productId: number) => {
+    try {
+      await removeCartItem(productId);
+
+      const cart = await getCart();
+
+      setCart(cart);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const total = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -25,7 +52,10 @@ export default function CartPage() {
         <>
           <div className="space-y-4">
             {items.map((item) => (
-              <div key={item.id} className="border rounded-lg p-4 flex gap-4">
+              <div
+                key={item.productId}
+                className="border rounded-lg p-4 flex gap-4"
+              >
                 <img
                   src={item.thumbnail}
                   alt={item.name}
@@ -39,7 +69,10 @@ export default function CartPage() {
 
                   <div className="mt-3 flex gap-2 items-center">
                     <button
-                      onClick={() => decreaseQuantity(item.id)}
+                      disabled={item.quantity <= 1}
+                      onClick={() =>
+                        handleQuantityChange(item.productId, item.quantity - 1)
+                      }
                       className="px-3 py-1 border rounded cursor-pointer"
                     >
                       -
@@ -48,14 +81,16 @@ export default function CartPage() {
                     <span>{item.quantity}</span>
 
                     <button
-                      onClick={() => increaseQuantity(item.id)}
+                      onClick={() =>
+                        handleQuantityChange(item.productId, item.quantity + 1)
+                      }
                       className="px-3 py-1 border rounded cursor-pointer"
                     >
                       +
                     </button>
 
                     <button
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => handleRemoveFromCart(item.productId)}
                       className="ml-4 text-red-500 cursor-pointer"
                     >
                       Remove

@@ -1,74 +1,89 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, Heart } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
+
 import SearchBar from "../common/SearchBar";
 import AccountMenu from "./AccountMenu";
 import CategoriesMenu from "./CategoriesMenu";
+
 import { useAuthStore } from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
-import { getWishlist } from "@/services/wishlist.service";
-import { useEffect } from "react";
 import { useWishlistStore } from "@/store/wishlistStore";
+
+import { getCart } from "@/services/cart.service";
+import { getWishlist } from "@/services/wishlist.service";
 
 export default function Header() {
   const auth = useAuthStore((state) => state.isLoggedIn);
 
-  const wishListItems = useWishlistStore((state) => state.items);
+  const cartItems = useCartStore((state) => state.items);
+  const setCart = useCartStore((state) => state.setCart);
 
+  const wishListItems = useWishlistStore((state) => state.items);
   const setWishlist = useWishlistStore((state) => state.setWishlist);
 
   useEffect(() => {
     if (!auth) {
+      setCart([]);
       setWishlist([]);
       return;
     }
 
-    const loadWishlist = async () => {
+    const loadData = async () => {
       try {
-        const data = await getWishlist();
-        setWishlist(data);
+        const [cartData, wishlistData] = await Promise.all([
+          getCart(),
+          getWishlist(),
+        ]);
+
+        setCart(cartData);
+
+        setWishlist(wishlistData);
       } catch (error) {
         console.log(error);
       }
     };
 
-    loadWishlist();
-  }, [auth, setWishlist]);
+    loadData();
+  }, [auth, setCart, setWishlist]);
 
-  const cartCount = useCartStore((state) =>
-    state.items.reduce((total, item) => total + item.quantity, 0),
-  );
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <header className="sticky top-0 bg-white border-b z-50">
-      <div className="max-w-7xl mx-auto p-4 flex items-center gap-4">
-        <h1 className="font-bold text-xl text-black">Bayaa</h1>
-        <CategoriesMenu></CategoriesMenu>
-        <div className="flex-1 text-black">
-          <SearchBar></SearchBar>
+    <header className="sticky top-0 z-50 border-b bg-white">
+      <div className="mx-auto flex max-w-7xl items-center gap-4 p-4">
+        <Link href="/">
+          <h1 className="text-xl font-bold text-black">Bayaa</h1>
+        </Link>
+
+        <CategoriesMenu />
+
+        <div className="flex-1">
+          <SearchBar />
         </div>
+
         <Link href="/wishlist" className="relative">
-          <Heart size={24} className="text-black cursor-pointer"></Heart>
+          <Heart size={24} className="cursor-pointer text-black" />
+
           {wishListItems.length > 0 && (
             <span className="absolute -right-2 -top-2 rounded-full bg-red-500 px-2 text-xs text-white">
               {wishListItems.length}
             </span>
           )}
         </Link>
-        <div>
-          <Link href="/cart" className="relative">
-            <ShoppingCart
-              size={24}
-              className="cursor-pointer text-black"
-            ></ShoppingCart>
-            {cartCount > 0 && (
-              <span className=" absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                {cartCount}
-              </span>
-            )}
-          </Link>
-        </div>
+
+        <Link href="/cart" className="relative">
+          <ShoppingCart size={24} className="cursor-pointer text-black" />
+
+          {cartCount > 0 && (
+            <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+              {cartCount}
+            </span>
+          )}
+        </Link>
+
         {auth ? (
           <AccountMenu />
         ) : (
