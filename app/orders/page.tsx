@@ -6,6 +6,7 @@ import AuthGuard from "@/components/auth/AuthGuard";
 import { getOrders } from "@/services/order.service";
 
 interface OrderItem {
+  id: number;
   productId: number;
   productName: string;
   unitPrice: number;

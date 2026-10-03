@@ -79,7 +79,7 @@ export default function CheckoutPage() {
       setPlacingOrder(true);
       const order = await createOrder({
         items: cart.map((item) => ({
-          productId: item.id,
+          productId: item.productId,
           quantity: item.quantity,
         })),
 
@@ -232,7 +232,7 @@ export default function CheckoutPage() {
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="border rounded-lg p-4">
               {cart.map((item) => (
-                <div key={item.id} className="flex justify-between">
+                <div key={item.productId} className="flex justify-between">
                   <span>
                     {item.name} x {item.quantity}
                   </span>

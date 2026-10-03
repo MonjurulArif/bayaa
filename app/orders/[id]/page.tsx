@@ -8,6 +8,7 @@ import AuthGuard from "@/components/auth/AuthGuard";
 import { getOrder } from "@/services/order.service";
 
 interface OrderItem {
+  id: number;
   productId: number;
   productName: string;
   unitPrice: number;
@@ -97,7 +98,7 @@ export default function OrderDetailsPage() {
           <h2 className="mb-3 text-xl font-semibold">Ordered Items</h2>
 
           {order.items.map((item) => (
-            <div key={item.productId} className="mb-2 flex justify-between">
+            <div key={item.id} className="mb-2 flex justify-between">
               <span>
                 {item.productName} × {item.quantity}
               </span>
