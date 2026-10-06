@@ -95,7 +95,11 @@ export default function CheckoutPage() {
         paymentMethod,
       });
 
+      console.log("ORDER CREATED:", order);
+
       clearCart();
+
+      console.log("CART CLEARED");
 
       toast.success("Order placed successfully");
 

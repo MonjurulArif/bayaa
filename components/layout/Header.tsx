@@ -38,6 +38,8 @@ export default function Header() {
           getWishlist(),
         ]);
 
+        console.log("HEADER - Cart from API:", cartData);
+
         setCart(cartData);
 
         setWishlist(wishlistData);
