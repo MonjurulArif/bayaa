@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 import {
   AdminOrder,
@@ -31,6 +32,28 @@ export default function AdminOrdersPage() {
   useEffect(() => {
     console.log("STATE ORDERS:", orders);
   }, [orders]);
+
+  const handleStatusChange = async (orderId: number, newStatus: string) => {
+    try {
+      await updateOrderStatus(orderId, newStatus);
+
+      setOrders((currentOrders) =>
+        currentOrders.map((order) =>
+          order.id === orderId ? { ...order, status: newStatus } : order,
+        ),
+      );
+
+      toast.success("Order status updated successfully");
+    } catch (error) {
+      console.error("Failed to update order status:", error);
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to update order status",
+      );
+    }
+  };
 
   return (
     <div className="mx-auto max-w-7xl p-6">
@@ -70,24 +93,9 @@ export default function AdminOrdersPage() {
                 <td className="border p-3">
                   <select
                     value={order.status}
-                    onChange={async (e) => {
-                      try {
-                        await updateOrderStatus(order.id, e.target.value);
-
-                        setOrders((currentOrders) =>
-                          currentOrders.map((currentOrder) =>
-                            currentOrder.id === order.id
-                              ? {
-                                  ...currentOrder,
-                                  status: e.target.value,
-                                }
-                              : currentOrder,
-                          ),
-                        );
-                      } catch (error) {
-                        console.error("Failed to update order status:", error);
-                      }
-                    }}
+                    onChange={(e) =>
+                      handleStatusChange(order.id, e.target.value)
+                    }
                     className="rounded border px-2 py-1 text-gray-900"
                   >
                     <option value="Pending">Pending</option>
